@@ -4,7 +4,9 @@ const doAuth = require("./utils/verify-auth");
 const { spawn } = require("child_process");
 
 const YOGO = process.env.YOGO;
-const SENDERS = [process.env.AUTH_SENDER];
+const SENDERS = process.env.AUTH_SENDERS
+  ? process.env.AUTH_SENDER.split(",")
+  : [];
 const EMAILS = process.env.BOT_EMAILS.split(",");
 
 const emailsMap = new Map(
@@ -42,7 +44,7 @@ const emailsMap = new Map(
           }
           //   console.log(stdout);
           if (stdout.startsWith("Inbox is empty")) {
-            console.log("empty");
+            console.log("Empty");
             break;
           }
           let data;
@@ -87,7 +89,7 @@ const emailsMap = new Map(
 })();
 
 function doMail(data) {
-  console.log(`new mail: '${data.id}'`);
+  console.log(`New mail: '${data.id}'`);
   const r = data.body.match(/https?:\/\/\S+/);
   if (!r) return { res: false, err: e };
   return doAuth(r[0]);
